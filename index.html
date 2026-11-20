@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Herbalist's Companion</title>
+<meta name="description" content="A growing materia medica and an herbal formula bench, for iPhone, iPad and Android.">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: the app's own page on the web. A walnut ground with the bench's
+   plant drawings inked in gold behind the phones; a monograph's order, the
+   plant, then the bench, then the shelf of shared formulas. */
+:root {
+  --ground: #0F0D0A;
+  --band: #15120D;
+  --panel: #1A1610;
+  --ink: #ECE8DD;
+  --ink-soft: #B3AE9F;
+  --ink-faint: #7A756A;
+  --rule: #2A2820;
+  --gold: #C9A463;
+  --gold-ink: #15120D;
+  --plant: rgba(201, 164, 99, 0.13);
+  --bezel: #050403;
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  --serif: 'Goudy Bookletter 1911', 'Goudy Old Style', Georgia, serif;
+  --sans: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground: #FAF6EE; --band: #F3EDE1; --panel: #FFFEFA; --ink: #191510;
+    --ink-soft: #4A4335; --ink-faint: #7E7462; --rule: #E2D8C4; --gold: #8C6420;
+    --gold-ink: #FFFEFA; --plant: rgba(140, 100, 32, 0.12); --bezel: #191510;
+    --shadow: 0 30px 70px rgba(60, 40, 10, 0.22);
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --ground: #FAF6EE; --band: #F3EDE1; --panel: #FFFEFA; --ink: #191510;
+  --ink-soft: #4A4335; --ink-faint: #7E7462; --rule: #E2D8C4; --gold: #8C6420;
+  --gold-ink: #FFFEFA; --plant: rgba(140, 100, 32, 0.12); --bezel: #191510;
+  --shadow: 0 30px 70px rgba(60, 40, 10, 0.22);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+img { max-width: 100%; }
+body {
+  background: var(--ground); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: -0.005em; }
+p { margin: 0; }
+a { color: var(--gold); }
+a:focus-visible, .badge:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); }
+
+/* The bar. */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ground); }
+header.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--ground) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(12px); -webkit-backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-family: var(--serif); font-size: 21px; }
+.brand img { width: 34px; height: 34px; border-radius: 8px; }
+.bar nav { display: flex; align-items: center; gap: 24px; font-size: 15px; }
+.bar nav a { color: var(--ink-soft); text-decoration: none; }
+.bar nav a:hover { color: var(--ink); }
+.bar nav .get { color: var(--gold-ink); background: var(--gold); padding: 8px 16px; border-radius: 999px; font-weight: 500; }
+.bar nav .get:hover { color: var(--gold-ink); }
+
+/* The opening. */
+.hero { position: relative; overflow: hidden; }
+.hero .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; padding-block: 88px 96px; }
+.hero h1 { font-size: clamp(44px, 6.2vw, 76px); line-height: 1.02; }
+.sub { font-family: var(--serif); font-size: clamp(22px, 2.4vw, 28px); color: var(--gold); margin-top: 14px; }
+.lede { color: var(--ink-soft); font-size: 19px; margin-top: 24px; max-width: 30em; }
+.stores { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+.badge { display: inline-block; border-radius: 9px; line-height: 0; }
+.badge img { height: 52px; width: auto; display: block; }
+.platforms { margin-top: 18px; font-size: 14px; color: var(--ink-faint); }
+
+/* Phones, and the plant drawn behind them. */
+.stage { position: relative; display: grid; place-items: center; min-height: 600px; }
+.plant {
+  position: absolute; background: var(--plant);
+  -webkit-mask: var(--src) center / contain no-repeat; mask: var(--src) center / contain no-repeat;
+  pointer-events: none;
+}
+.stage .plant { width: 78%; height: 112%; top: -6%; right: -4%; }
+.phone {
+  width: 100%; max-width: 290px; aspect-ratio: 720 / 1565; position: relative;
+  border-radius: 44px; padding: 9px; background: var(--bezel);
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.phone img { display: block; width: 100%; height: 100%; object-fit: cover; border-radius: 36px; }
+.stage .phone.back { position: absolute; max-width: 250px; transform: translate(-46%, 6%) rotate(-5deg); opacity: 0.96; }
+.stage .phone.front { transform: translate(22%, -2%); }
+
+/* The three parts of the craft. */
+.step { position: relative; overflow: hidden; border-top: 1px solid var(--rule); }
+.step:nth-child(even) { background: var(--band); }
+.step .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 72px; align-items: center; padding-block: 104px; }
+.step:nth-child(even) .wrap { grid-template-columns: 1.1fr 0.9fr; }
+.step:nth-child(even) .figure { order: 2; }
+.figure { position: relative; display: grid; place-items: center; }
+.figure .plant { width: 120%; height: 120%; top: -10%; left: -10%; }
+.step h2 { font-size: clamp(34px, 4.2vw, 50px); line-height: 1.06; margin-top: 14px; }
+.step p { color: var(--ink-soft); margin-top: 20px; max-width: 31em; }
+.step ul { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; max-width: 31em; }
+.step li { display: grid; grid-template-columns: 18px 1fr; gap: 12px; color: var(--ink-soft); font-size: 16px; }
+.step li::before { content: ""; width: 7px; height: 7px; margin-top: 10px; border-radius: 50%; background: var(--gold); }
+
+/* The close. */
+.close { border-top: 1px solid var(--rule); text-align: center; position: relative; overflow: hidden; }
+.close .wrap { padding-block: 112px 104px; position: relative; }
+.close .why { font-family: var(--serif); font-size: clamp(26px, 3.4vw, 38px); line-height: 1.25; max-width: 22em; margin: 0 auto; text-wrap: balance; }
+.close .stores { justify-content: center; margin-top: 40px; }
+.care { color: var(--ink-faint); font-size: 14px; max-width: 38em; margin: 44px auto 0; line-height: 1.6; }
+
+footer { border-top: 1px solid var(--rule); background: var(--band); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: center; justify-content: space-between; padding-block: 32px 44px; font-size: 14px; color: var(--ink-faint); }
+footer nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+footer a { color: var(--ink-soft); text-decoration: none; }
+footer a:hover { color: var(--gold); }
+
+@media (max-width: 900px) {
+  .hero .wrap, .step .wrap, .step:nth-child(even) .wrap { grid-template-columns: 1fr; gap: 56px; }
+  .hero .wrap { padding-block: 48px 64px; text-align: center; }
+  .lede { margin-left: auto; margin-right: auto; }
+  .hero .stores { justify-content: center; }
+  .stage { min-height: 520px; }
+  .step .wrap { padding-block: 72px; }
+  .step:nth-child(even) .figure { order: 0; }
+  .phone { max-width: 250px; }
+  .stage .phone.back { max-width: 215px; }
+}
+@media (max-width: 560px) {
+  .bar nav a:not(.get) { display: none; }
+  .brand span { font-size: 18px; }
+  .stage { min-height: 460px; }
+  .stage .phone.back { display: none; }
+  .stage .phone.front { transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .badge, .bar nav .get { transition: transform 140ms ease, filter 140ms ease; }
+  .badge:hover, .bar nav .get:hover { transform: translateY(-1px); filter: brightness(1.06); }
+}
+</style>
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Herbalist's Companion">
+<meta property="og:description" content="A growing materia medica and an herbal formula bench, for iPhone, iPad and Android.">
+<meta property="og:url" content="https://herbalistscompanion.com/">
+<meta property="og:image" content="https://herbalistscompanion.com/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://herbalistscompanion.com/">
+<meta name="theme-color" content="#0F0D0A">
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="img/icon.png" alt=""><span>Herbalist's Companion</span></a>
+    <nav>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/support.html">Support</a>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/privacy.html">Privacy</a>
+      <a class="get" href="#get">Get the app</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Herb Guide &amp; Formula Builder</p>
+        <h1>Herbalist's Companion</h1>
+        <p class="lede">A vast and growing materia medica authored by practicing herbalists and a professional quality herbal formulator, designed with care to serve your herbal interests.</p>
+        <div class="stores">
+          <a class="badge" href="https://apps.apple.com/app/id6822974517"><img src="img/badge-appstore.svg" alt="Download on the App Store" width="156" height="52"></a>
+          <a class="badge" href="https://play.google.com/store/apps/details?id=org.penumbral.herbalistscompanion"><img src="img/badge-googleplay.png" alt="Get it on Google Play" width="175" height="52"></a>
+        </div>
+        <p class="platforms">For iPhone, iPad and Android.</p>
+      </div>
+      <div class="stage">
+        <div class="plant" style="--src: url(img/plant-calendula.png)"></div>
+        <div class="phone back"><img src="img/herb.jpg" alt="" aria-hidden="true"></div>
+        <div class="phone front"><img src="img/bench.jpg" alt="The formula bench building an After-Dinner Tea: fennel seed as lead, chamomile as support, spearmint and red rose as synergizers, cinnamon as driver, each with its energetics."></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="craft">
+    <section class="step">
+      <div class="wrap">
+        <div class="figure">
+          <div class="plant" style="--src: url(img/plant-chamomile.png)"></div>
+          <div class="phone"><img src="img/herb.jpg" alt="An herb's page in the app, with its plate, its actions and its energetics."></div>
+        </div>
+        <div>
+          <p class="eyebrow">The materia medica</p>
+          <h2>Meet the plant</h2>
+          <p>Open an herb to meet the plant: its history, how herbalists have used it through the centuries, how that usage has changed today, and how you can use it to craft potent brews and delicious drafts of your own.</p>
+          <p>Every monograph is thoroughly researched and carefully crafted by hand to ensure you have reliable information, straight from the source.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="step">
+      <div class="wrap">
+        <div class="figure">
+          <div class="plant" style="--src: url(img/plant-fennel.png)"></div>
+          <div class="phone"><img src="img/bench.jpg" alt="" aria-hidden="true"></div>
+        </div>
+        <div>
+          <p class="eyebrow">The formula bench</p>
+          <h2>Put the craft into practice</h2>
+          <p>Put a few herbs together and watch the formula take shape as you build it.</p>
+          <ul>
+            <li>The formula's actions, energetics and flavor profile are updated with each additional herb.</li>
+            <li>Customized step-by-step preparation instructions are presented for your particular herb set.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="step">
+      <div class="wrap">
+        <div class="figure">
+          <div class="plant" style="--src: url(img/plant-lavender.png)"></div>
+          <div class="phone"><img src="img/shared.jpg" alt="A formula another herbalist has shared, with its herbs, its preparation and its notes."></div>
+        </div>
+        <div>
+          <p class="eyebrow">Discover</p>
+          <h2>Show it off</h2>
+          <p>When your formulation is finished, share your creations with other herbalists and delight in discovering new recipes.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="close" id="get">
+    <div class="wrap">
+      <p class="why">We built Herbalist's Companion to bring the plants closer to you, and to bring all of us in closer connection with the natural world.</p>
+      <div class="stores">
+          <a class="badge" href="https://apps.apple.com/app/id6822974517"><img src="img/badge-appstore.svg" alt="Download on the App Store" width="156" height="52"></a>
+          <a class="badge" href="https://play.google.com/store/apps/details?id=org.penumbral.herbalistscompanion"><img src="img/badge-googleplay.png" alt="Get it on Google Play" width="175" height="52"></a>
+        </div>
+      <p class="care">Herbalist's Companion is a compendium of herbal tradition. It does not diagnose or treat, and it is no substitute for a qualified physician. Practice with care.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Herbalist's Companion</span>
+    <nav>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/support.html">Support</a>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/privacy.html">Privacy policy</a>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/delete-data.html">Delete your data</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
