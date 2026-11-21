@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How Herbalist's Companion works</title>
+<meta name="description" content="How the Herbalist's Companion herb guide and formula app is built, and how the formulas people share in it are kept safe.">
+<link rel="icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: the homepage's frame (its ground, bar, and footer, as index.html
+   sets them) around the app's own reading page: serif text in one narrow
+   column, small sans section labels on a hairline, and the masthead with the
+   mark and the vine. */
+:root {
+  --ground: #0F0D0A;
+  --band: #15120D;
+  --panel: #1A1610;
+  --ink: #ECE8DD;
+  --ink-soft: #B3AE9F;
+  --ink-faint: #7A756A;
+  --rule: #2A2820;
+  --hair: #453F32;
+  --gold: #C9A463;
+  --gold-ink: #15120D;
+  --serif: 'Goudy Bookletter 1911', 'Goudy Old Style', Georgia, serif;
+  --sans: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --ground: #FAF6EE; --band: #F3EDE1; --panel: #FFFEFA; --ink: #191510;
+    --ink-soft: #4A4335; --ink-faint: #7E7462; --rule: #E2D8C4; --hair: #B3A68E;
+    --gold: #8C6420; --gold-ink: #FFFEFA;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --ground: #FAF6EE; --band: #F3EDE1; --panel: #FFFEFA; --ink: #191510;
+  --ink-soft: #4A4335; --ink-faint: #7E7462; --rule: #E2D8C4; --hair: #B3A68E;
+  --gold: #8C6420; --gold-ink: #FFFEFA;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+html, body { margin: 0; }
+body {
+  background: var(--ground); color: var(--ink);
+  font-family: var(--sans); font-size: 17px; line-height: 1.65;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.wrap {
+  max-width: 1120px; margin: 0 auto;
+  padding-left: max(24px, env(safe-area-inset-left, 0px));
+  padding-right: max(24px, env(safe-area-inset-right, 0px));
+}
+a { color: var(--gold); }
+a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+
+/* The bar, as the homepage sets it. */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ground); }
+header.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--ground) 86%, transparent);
+  backdrop-filter: saturate(140%) blur(12px); -webkit-backdrop-filter: saturate(140%) blur(12px);
+  border-bottom: 1px solid var(--rule);
+}
+.bar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-family: var(--serif); font-size: 21px; }
+.brand img { width: 34px; height: 34px; border-radius: 8px; }
+.bar nav { display: flex; align-items: center; gap: 24px; font-size: 15px; }
+.bar nav a { color: var(--ink-soft); text-decoration: none; }
+.bar nav a:hover { color: var(--ink); }
+.bar nav .get { color: var(--gold-ink); background: var(--gold); padding: 8px 16px; border-radius: 999px; font-weight: 500; }
+.bar nav .get:hover { color: var(--gold-ink); }
+
+/* The article, as the app sets a reading page. */
+main {
+  max-width: 36rem; padding: 56px 0 72px;
+  margin-left: max(20px, env(safe-area-inset-left, 0px), calc((100% - 36rem) / 2));
+  margin-right: max(20px, env(safe-area-inset-right, 0px), calc((100% - 36rem) / 2));
+  font-family: var(--serif); font-size: 1.1875rem; line-height: 1.65;
+}
+main p { margin: 0 0 1.05em; }
+main a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+main a:hover { text-decoration-thickness: 2px; }
+
+.masthead { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.4rem; }
+.titles { flex: 1; min-width: 0; }
+.mark { width: 46px; height: 46px; flex: none; color: var(--gold); margin-top: 0.2rem; }
+main h1 { font-family: var(--serif); font-weight: 400; font-size: 2.1rem; line-height: 1.25; margin: 0; letter-spacing: -0.005em; }
+main .byline {
+  display: flex; align-items: center; gap: 0.5rem; margin: 0.35rem 0 0;
+  font-family: var(--sans); font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.13em; text-transform: uppercase; color: var(--gold);
+}
+.vine { width: 44px; height: 10px; flex: none; color: var(--hair); }
+main .updated { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-soft); margin: 0 0 2.2rem; }
+
+main h2 {
+  font-family: var(--sans); font-weight: 700; font-size: 0.75rem;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft);
+  margin: 2.6rem 0 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--hair);
+}
+main h2.part {
+  margin-top: 3.6rem; padding-top: 1.6rem; border-top: 1px solid var(--hair);
+  border-bottom: 0; text-align: center; color: var(--gold);
+}
+main h3 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; line-height: 1.3; margin: 2rem 0 0.45rem; }
+
+ul.lessons { padding-left: 1.2rem; margin: 0 0 1rem; }
+ul.lessons li { margin-bottom: 0.7em; padding-left: 0.2rem; }
+ul.lessons li::marker { color: var(--gold); }
+
+.more h2 { margin-top: 3rem; }
+ul.rows {
+  list-style: none; margin: 0; padding: 0 1rem;
+  background: var(--panel); border: 1px solid var(--hair); border-radius: 10px;
+}
+ul.rows li + li { border-top: 1px solid var(--rule); }
+main ul.rows a {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.8rem 0; color: var(--ink); text-decoration: none;
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 500;
+}
+main ul.rows a:hover, main ul.rows a:focus-visible { text-decoration: underline; }
+.chev { color: var(--ink-soft); font-size: 1.2rem; line-height: 1; }
+
+.foot {
+  margin-top: 2.6rem; text-align: center;
+  font-family: var(--sans); font-size: 0.8rem; line-height: 1.7; color: var(--ink-soft);
+}
+main .foot p { margin: 0; }
+
+/* The footer, as the homepage sets it. */
+footer.site { border-top: 1px solid var(--rule); background: var(--band); }
+footer.site .wrap { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: center; justify-content: space-between; padding-block: 32px 44px; font-size: 14px; color: var(--ink-faint); }
+footer.site nav { display: flex; flex-wrap: wrap; gap: 8px 24px; }
+footer.site a { color: var(--ink-soft); text-decoration: none; }
+footer.site a:hover { color: var(--gold); }
+
+@media (max-width: 560px) {
+  .bar nav a:not(.get) { display: none; }
+  .brand span { font-size: 18px; }
+  main { padding-top: 40px; }
+  main h1 { font-size: 1.85rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bar nav .get { transition: transform 140ms ease, filter 140ms ease; }
+  .bar nav .get:hover { transform: translateY(-1px); filter: brightness(1.06); }
+}
+</style>
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="How Herbalist's Companion works">
+<meta property="og:description" content="How the Herbalist's Companion herb guide and formula app is built, and how the formulas people share in it are kept safe.">
+<meta property="og:url" content="https://herbalistscompanion.com/how-it-works.html">
+<meta property="og:image" content="https://herbalistscompanion.com/img/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://herbalistscompanion.com/how-it-works.html">
+<meta name="theme-color" content="#0F0D0A">
+</head>
+<body>
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="img/icon.png" alt=""><span>Herbalist's Companion</span></a>
+    <nav>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/support.html">Support</a>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/privacy.html">Privacy</a>
+      <a class="get" href="./#get">Get the app</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+
+<header class="masthead">
+  <div class="titles">
+    <h1>How Herbalist's Companion works</h1>
+    <p class="byline"><span>Herbalist's Companion</span><svg class="vine" viewBox="0 0 56 12" fill="none" aria-hidden="true" focusable="false"><path d="M1 7 C 10 3.5, 18 9.5, 27 6.5 S 45 4, 55 6.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/><path d="M9 5.4 C 10.4 2.6, 13 2, 14.6 3.2 C 13 4.8, 10.8 5.6, 9 5.4 z" stroke="currentColor" stroke-width="0.94" stroke-linejoin="round"/><path d="M20 8.4 C 21.2 11, 23.8 11.4, 25.4 10.4 C 24 8.6, 21.8 8, 20 8.4 z" stroke="currentColor" stroke-width="0.94" stroke-linejoin="round"/><path d="M36 4.8 C 37.4 2.2, 40 1.8, 41.6 3 C 40.2 4.8, 37.8 5.4, 36 4.8 z" stroke="currentColor" stroke-width="0.94" stroke-linejoin="round"/></svg></p>
+  </div>
+  <svg class="mark" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true" focusable="false"><path d="m 63.795499,34.208822 c 1.09115,-0.642379 1.22329,1.50388 0.48432,0.901459 -0.11994,-0.09778 -3.49081,1.78151 -5.87746,7.86012 -0.63673,1.621686 2.98784,-8.029828 4.16994,-8.231004 0.53048,-0.09028 1.21303,-0.523334 1.2232,-0.530575 z"/> <g transform="translate(0.010107,-0.0066277)"> <path d="m 35.96,47.5 -0.75,-1.69 -1.22,-2.82 -1.18,-2.76 -1.14,-2.66 -1.09,-2.56 -1.03,-2.43 -0.99,-2.29 -0.92,-2.12 -0.87,-1.92 -0.22,-0.43 -0.22,-0.38 -0.23,-0.34 -0.22,-0.31 -0.23,-0.27 -0.22,-0.25 -0.22,-0.23 -0.23,-0.21 -0.21,-0.2 -0.22,-0.2 -0.21,-0.19 -0.21,-0.2 -0.2,-0.21 -0.19,-0.23 -0.19,-0.24 -0.18,-0.27 -0.38,-0.77 -0.17,-0.78 0.02,-0.75 0.18,-0.72 0.33,-0.67 0.45,-0.62 0.55,-0.55 0.63,-0.46 0.7,-0.37 0.73,-0.25 0.75,-0.14 0.75,0.01 0.73,0.15 0.68,0.31 0.62,0.49 0.54,0.68 0.16,0.28 0.14,0.28 0.11,0.27 0.1,0.27 0.09,0.27 0.08,0.28 0.08,0.28 0.09,0.28 0.09,0.3 0.11,0.3 0.12,0.31 0.15,0.32 0.18,0.33 0.21,0.35 0.24,0.37 0.29,0.39 1.35,1.62 1.5,1.76 1.62,1.89 1.73,2 1.83,2.1 1.9,2.19 1.95,2.27 2,2.33 2.03,2.4 2.03,2.45 2.02,2.48 1.18,1.48 z"/> </g> <path d="M 55.010107,46.993372 C 57.91317,35.349823 66.396085,26.128102 77.064122,20.543033 l 2.521204,-1.844866" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/> <path d="M 55.252029,46.023076 54.16338,50.389407" fill="none" stroke="currentColor" stroke-width="4"/> <path d="m 73.027469,23.128155 c 2.489533,-5.402255 6.705146,-7.683361 8.610036,-8.438653 1.409901,-0.559028 4.626281,-0.918443 6.178497,-1.272129 -0.475193,0.628484 -0.597336,3.109533 -3.543836,6.5826 -2.579131,2.308701 -6.330887,3.518159 -11.244697,3.128182 z"/> <path d="m 63.248492,34.618841 c 4.438167,-3.3859 8.924935,-4.552543 13.525815,-3.936465 3.505336,0.46938 6.655303,2.512892 7.331631,2.953129 -0.469834,0.195711 -2.934334,2.702282 -7.31664,4.015967 -3.319014,0.994942 -8.820665,0.277055 -13.540806,-3.032631 z"/> <path d="m 57.431934,41.41352 c -3.354457,-2.261171 -6.105704,-4.976474 -7.717671,-8.414672 -2.52387,-5.383216 -2.740255,-9.97785 -2.966014,-10.738888 0.669268,0.498786 5.626793,2.914025 8.650156,7.179524 2.145565,3.02706 2.523297,7.210172 2.033529,11.974036 z"/> <g transform="translate(0.010107,-0.0066277)"> <rect x="18" y="44" width="64" height="7" rx="3.5"/> </g> <g transform="translate(0.010107,-0.0066277)"> <path d="m 24,55 h 52 c 0,14 -8,22 -18,24 1,3 4,5 7,6 v 4 H 35 v -4 c 3,-1 6,-3 7,-6 C 32,77 24,69 24,55 Z"/> </g></svg>
+</header>
+<p class="updated">Updated November 20, 2026</p>
+
+<p>
+  Herbalist's Companion is an herb guide and a bench for building herbal
+  formulas, for Android, iPhone, and iPad. The guide holds fifty herbs, each
+  with its traditional uses, energetics, tastes, actions, and cautions. On the
+  bench, herbs are placed in four roles (Lead, Support, Synergizer, and
+  Driver), and the app reads the blend as it grows. This page says how it is built and how shared formulas are kept safe, with engineering notes after the overview.
+</p>
+
+<h2>What it is made of</h2>
+<p>
+  The app is written in React Native, which builds one app that runs natively
+  on both Android and iOS, with Expo, a set of tools for building, signing,
+  and updating React Native apps. Supabase, a hosted service built on the
+  Postgres database, holds the accounts and the saved formulas.
+</p>
+<p>
+  The herb guide is kept on the phone once it has loaded, so it can be read
+  without a connection. The reading of a formula (its warmth and moisture, its
+  flavor, the actions it covers, and the cautions its herbs carry) is worked
+  out on the phone as each herb goes onto the bench. A formula stays on the
+  phone until it is saved, and saving needs an account. A saved formula can
+  be read or changed only by its own account, unless its maker publishes it. The app contains no advertising, analytics, or crash-reporting SDKs.
+</p>
+
+<h2>How sharing is kept safe</h2>
+<p>
+  Nothing is published until its maker taps Publish, and publishing needs an
+  account. Before a first share, the app shows the rules for shared formulas
+  and asks for agreement to the <a href="https://jpayne8888.github.io/herbal-companion-legal/terms.html">terms of use</a>. A
+  shared photo is hidden from everyone else until it passes an automatic
+  check, first on the phone and then on the server. A refused photo is not
+  kept. Any signed-in reader can report a formula, and a person reads every
+  report. Any reader can hide a formula or its maker. An account can be
+  deleted from Settings, and everything saved to it goes with it. The
+  <a href="https://jpayne8888.github.io/herbal-companion-legal/privacy.html">privacy policy</a> says in full what is collected and
+  why.
+</p>
+
+<h2 class="part">Engineering notes</h2>
+
+<h3>The rules live in the database</h3>
+<p>
+  Who may read or write a saved formula is decided by rules in the database
+  itself, not by the app. Anything can send a request to the server, so a check made only in the app would hold only for the app. With the
+  rules in the database, a saved formula is readable and writable by its own
+  account and no other, whatever sends the request. They are tested the way an attacker would meet them: a suite starts a real local copy of the database, signs in as two accounts and as a visitor with none, and tries what each should and should not be able to do.
+</p>
+
+<h3>Shared photos are hidden until they pass</h3>
+<p>
+  A photo on a shared formula is invisible to everyone but its maker until it
+  has passed its check. Showing a photo at once and removing it later would leave a window in which anyone could see it. The check
+  runs in two places. On the phone, the face detection built into the phone's
+  own operating system looks for a face, and the photo is not sent anywhere
+  for that. On the server, the photo goes to Google Cloud Vision, a Google
+  service that reads images, which checks it for explicit content and for a
+  human face. The face check does not recognize anyone, and nothing about a face is kept.
+</p>
+<p>
+  The check fails closed. A photo the phone cannot check is not added, and a
+  photo the server has not passed stays hidden. The server checks every
+  waiting photo on its own, so an app that never asks for a check still
+  cannot make a photo visible.
+</p>
+
+<h3>The phone does the arithmetic</h3>
+<p>
+  The formula reading is computed on the phone, in plain functions with no
+  network in them. The bench answers as each herb lands, with no wait for a
+  server, and a formula in progress is never sent anywhere. The herb guide is
+  stored on the phone after its first load and read from there when there is
+  no connection.
+</p>
+
+<h3>Signed updates</h3>
+<p>
+  The app is built to take small fixes between store releases as updates. Each build
+  carries a certificate and refuses any update its matching private key did
+  not sign, and that key is kept outside the code. An update server that was
+  taken over, or a network that tampered with the download, could not get the app to run code that key did not sign.
+</p>
+
+<h3>No third-party SDKs for ads, analytics, or crashes</h3>
+<p>
+  The app does no analytics or usage tracking. That costs the usual
+  instruments: there is no dashboard of what readers tap and no automatic
+  crash report. Faults are found by tests and by what people send through the feedback form. In return, the privacy policy can
+  name every service the app talks to, and the list is short.
+</p>
+
+<h3>Release discipline</h3>
+<p>
+  Store builds come from a release branch cut from the main line of work, and
+  that branch takes only fixes to what it ships. Before an Android build may
+  be uploaded to the store, a script opens it and checks the file itself rather
+  than the settings that produced it. It confirms that the build runs on real phones and not only the emulator, carries the right version and the release signature, was built from the current code, accepts only signed updates, asks for no hardware it does not need, and finds every database change it expects already on the server.
+</p>
+
+<h3>Tests</h3>
+<p>
+  There are three layers. About 1,600 tests cover the pure logic. About 800 render interface
+  components and check what they draw and do. About 300 more, in twenty
+  suites, run against a live local database and exercise its rules as real
+  signed-in users. A new test is expected to fail first: the code it guards is
+  broken on purpose, the test is seen to go red, and the code is put back. A
+  test that passes either way guards nothing.
+</p>
+
+<h3>The interface</h3>
+<p>
+  Every icon in the app, from the tab marks to the traditional symbols, is
+  drawn as vector paths. Symbol characters and emoji render differently from
+  one phone's fonts to the next, and some render as an empty box. The paper
+  the app appears to be printed on is one image laid full screen behind
+  everything, and its texture is held to a share of the contrast between the
+  page and a card, so it never reads as a card. Botanical plates on the herb pages are shown whole, since a crop removes the root and the flowering head a plate is drawn to show. Type follows the
+  reader's chosen size through four steps. No meaning rests on color alone:
+  wherever color says something, a word or a position says it too, so the app
+  reads the same to a color-deficient eye.
+</p>
+
+<h3>What was wrong, and what replaced it</h3>
+<ul class="lessons">
+  <li>The paper ground was first a small texture repeated across the screen. In all three versions tried, any mark in the texture became a pattern at a fixed spacing. One image the size of the screen has nothing to repeat.</li>
+  <li>The server checked shared photos only after Publish, so an unsuitable
+    photo sat in the editor looking accepted until the end. The check now
+    runs the moment a photo is chosen, without holding up the screen, and a
+    photo that passes then is not sent to be checked again after upload.</li>
+  <li>An early Android build held native code for the emulator only. It would
+    have installed on no real phone, and every check that day ran on an
+    emulator, where it worked. The release script came from that.</li>
+</ul>
+
+<nav class="more" aria-label="More about the app">
+<h2>More</h2>
+<ul class="rows">
+  <li><a href="https://jpayne8888.github.io/herbal-companion-legal/privacy.html">Privacy policy<span class="chev" aria-hidden="true">&#8250;</span></a></li>
+  <li><a href="https://jpayne8888.github.io/herbal-companion-legal/delete-data.html">Delete your data<span class="chev" aria-hidden="true">&#8250;</span></a></li>
+  <li><a href="https://jpayne8888.github.io/herbal-companion-legal/terms.html">Terms of use<span class="chev" aria-hidden="true">&#8250;</span></a></li>
+  <li><a href="https://jpayne8888.github.io/herbal-companion-legal/support.html">Support<span class="chev" aria-hidden="true">&#8250;</span></a></li>
+</ul>
+</nav>
+
+<footer class="foot">
+<p>
+  Designed and built by Jared Payne.<br>
+  Herbalist's Companion is operated by Broken&nbsp;Diamond&nbsp;P&nbsp;Ranch&nbsp;LLC.
+</p>
+</footer>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <span>Herbalist's Companion</span>
+    <nav>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/support.html">Support</a>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/privacy.html">Privacy policy</a>
+      <a href="https://jpayne8888.github.io/herbal-companion-legal/delete-data.html">Delete your data</a>
+      <a href="how-it-works.html" aria-current="page">How it works</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
