@@ -111,6 +111,18 @@ main h2.part {
 }
 main h3 { font-family: var(--serif); font-weight: 400; font-size: 1.35rem; line-height: 1.3; margin: 2rem 0 0.45rem; }
 
+code {
+  font-family: var(--sans); font-size: 0.82em; font-weight: 500;
+  letter-spacing: 0.01em; color: var(--ink-soft); white-space: nowrap;
+}
+dl.files {
+  margin: 0.4rem 0 1.2rem; padding: 0 1rem;
+  background: var(--panel); border: 1px solid var(--hair); border-radius: 10px;
+}
+dl.files div { padding: 0.75rem 0; }
+dl.files div + div { border-top: 1px solid var(--rule); }
+dl.files dt { font-family: var(--sans); font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+dl.files dd { margin: 0.15rem 0 0; font-size: 1.05rem; line-height: 1.5; color: var(--ink-soft); }
 ul.lessons { padding-left: 1.2rem; margin: 0 0 1rem; }
 ul.lessons li { margin-bottom: 0.7em; padding-left: 0.2rem; }
 ul.lessons li::marker { color: var(--gold); }
@@ -185,7 +197,7 @@ footer.site a:hover { color: var(--gold); }
   </div>
   <svg class="mark" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true" focusable="false"><path d="m 63.795499,34.208822 c 1.09115,-0.642379 1.22329,1.50388 0.48432,0.901459 -0.11994,-0.09778 -3.49081,1.78151 -5.87746,7.86012 -0.63673,1.621686 2.98784,-8.029828 4.16994,-8.231004 0.53048,-0.09028 1.21303,-0.523334 1.2232,-0.530575 z"/> <g transform="translate(0.010107,-0.0066277)"> <path d="m 35.96,47.5 -0.75,-1.69 -1.22,-2.82 -1.18,-2.76 -1.14,-2.66 -1.09,-2.56 -1.03,-2.43 -0.99,-2.29 -0.92,-2.12 -0.87,-1.92 -0.22,-0.43 -0.22,-0.38 -0.23,-0.34 -0.22,-0.31 -0.23,-0.27 -0.22,-0.25 -0.22,-0.23 -0.23,-0.21 -0.21,-0.2 -0.22,-0.2 -0.21,-0.19 -0.21,-0.2 -0.2,-0.21 -0.19,-0.23 -0.19,-0.24 -0.18,-0.27 -0.38,-0.77 -0.17,-0.78 0.02,-0.75 0.18,-0.72 0.33,-0.67 0.45,-0.62 0.55,-0.55 0.63,-0.46 0.7,-0.37 0.73,-0.25 0.75,-0.14 0.75,0.01 0.73,0.15 0.68,0.31 0.62,0.49 0.54,0.68 0.16,0.28 0.14,0.28 0.11,0.27 0.1,0.27 0.09,0.27 0.08,0.28 0.08,0.28 0.09,0.28 0.09,0.3 0.11,0.3 0.12,0.31 0.15,0.32 0.18,0.33 0.21,0.35 0.24,0.37 0.29,0.39 1.35,1.62 1.5,1.76 1.62,1.89 1.73,2 1.83,2.1 1.9,2.19 1.95,2.27 2,2.33 2.03,2.4 2.03,2.45 2.02,2.48 1.18,1.48 z"/> </g> <path d="M 55.010107,46.993372 C 57.91317,35.349823 66.396085,26.128102 77.064122,20.543033 l 2.521204,-1.844866" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/> <path d="M 55.252029,46.023076 54.16338,50.389407" fill="none" stroke="currentColor" stroke-width="4"/> <path d="m 73.027469,23.128155 c 2.489533,-5.402255 6.705146,-7.683361 8.610036,-8.438653 1.409901,-0.559028 4.626281,-0.918443 6.178497,-1.272129 -0.475193,0.628484 -0.597336,3.109533 -3.543836,6.5826 -2.579131,2.308701 -6.330887,3.518159 -11.244697,3.128182 z"/> <path d="m 63.248492,34.618841 c 4.438167,-3.3859 8.924935,-4.552543 13.525815,-3.936465 3.505336,0.46938 6.655303,2.512892 7.331631,2.953129 -0.469834,0.195711 -2.934334,2.702282 -7.31664,4.015967 -3.319014,0.994942 -8.820665,0.277055 -13.540806,-3.032631 z"/> <path d="m 57.431934,41.41352 c -3.354457,-2.261171 -6.105704,-4.976474 -7.717671,-8.414672 -2.52387,-5.383216 -2.740255,-9.97785 -2.966014,-10.738888 0.669268,0.498786 5.626793,2.914025 8.650156,7.179524 2.145565,3.02706 2.523297,7.210172 2.033529,11.974036 z"/> <g transform="translate(0.010107,-0.0066277)"> <rect x="18" y="44" width="64" height="7" rx="3.5"/> </g> <g transform="translate(0.010107,-0.0066277)"> <path d="m 24,55 h 52 c 0,14 -8,22 -18,24 1,3 4,5 7,6 v 4 H 35 v -4 c 3,-1 6,-3 7,-6 C 32,77 24,69 24,55 Z"/> </g></svg>
 </header>
-<p class="updated">Updated November 20, 2026</p>
+<p class="updated">Updated November 21, 2026</p>
 
 <p>
   Herbalist's Companion is an herb guide and a bench for building herbal
@@ -226,6 +238,130 @@ footer.site a:hover { color: var(--gold); }
 </p>
 
 <h2 class="part">Engineering notes</h2>
+
+<h3>The stack</h3>
+<p>
+  The client is React Native 0.85 and React 19 on Expo SDK 56, in TypeScript
+  with strict checking on. Screens are files under Expo Router. Data from the
+  server is fetched and cached with TanStack Query, and every query key is
+  defined in one module, so a write can find each cached copy it has made
+  stale. State that belongs to the phone (the formula in progress, the theme,
+  the text size) is held in small Zustand stores. The server is Supabase:
+  Postgres with row-level security, sign-in over PKCE, file storage, and
+  server functions written for Deno.
+</p>
+<p>
+  The code is layered so that the part most worth testing is the easiest to
+  test. <code>domain/</code> holds the calculations as pure functions, with no
+  network, no storage, and no React in them. <code>db/</code> holds every
+  query, the cache, and the offline copy. <code>store/</code> holds the
+  phone's own state. Screens and components call into those three.
+</p>
+
+<h3>Specified before it is built</h3>
+<p>
+  The app is built spec first. A piece of work with real size or risk begins
+  as a numbered directory under <code>specs/</code>, and no code is written
+  until the spec says what will be true when the work is done. There are 64
+  so far. One ledger lists each spec's number, its state, and what remains
+  of it.
+</p>
+<dl class="files">
+  <div>
+    <dt>spec.md</dt>
+    <dd>What will be true, as numbered requirements (<code>FR-067-03</code>),
+      with the edge cases and the decisions that belong to the owner. Each
+      decision is recorded with its date once it is made.</dd>
+  </div>
+  <div>
+    <dt>plan.md</dt>
+    <dd>How it will be built: the layers touched, the database changes, and
+      the order in which the parts are released.</dd>
+  </div>
+  <div>
+    <dt>tasks.md</dt>
+    <dd>The work cut into steps, each small enough to finish, check, and
+      commit on its own.</dd>
+  </div>
+</dl>
+<p>
+  Work is sorted by risk, and a small fix takes no spec at all, only a line
+  in the record of what shipped. A spec states its own tier. A full spec
+  carries all three files, and a light one carries the first alone. In
+  both, every requirement has an acceptance entry: a line that says what is
+  done, and what is seen, when the requirement holds.
+</p>
+<p>
+  A check enforces that shape on every new spec, and confirms that each spec
+  has a row in the ledger with a state from a fixed list. The 63 specs
+  written before the check existed are registered with what each one lacks,
+  and that register can only shrink.
+</p>
+<p>
+  A spec is kept true after the work lands. When building shows that a spec
+  was wrong or incomplete, the spec is corrected in the same commit as the
+  code. Every change a reader will receive is entered in the release plan
+  before work on it starts, with the version it ships in.
+</p>
+
+<h3>Standing rules have numbers</h3>
+<p>
+  What stays true across every piece of work is kept apart from the specs,
+  in standing documents for the product, the architecture, and the
+  calculations. Each rule there is a numbered statement.
+  <code>ARC-019</code> says a store build comes from a release branch and
+  never from the main line. <code>ARC-011</code> says the app can write
+  feedback and can never read it back. Code comments and tests cite the
+  number, so the reason behind a line of code can be looked up. When a spec
+  changes something a standing document describes, that document changes in
+  the same commit. Above both sits a constitution of five principles that no
+  spec may contradict.
+</p>
+
+<h3>A rule a script can check is checked by a script</h3>
+<p>
+  A rule that rests on memory gets skipped, so a rule that can be tested is
+  turned into a check. About sixty check scripts stand beside the test
+  suites, and each is narrow. One fails when a code comment names a file or a
+  function that no longer exists. One fails when a script has rewritten a
+  data file in the wrong text encoding. One hashes every piece of text a
+  person has approved for readers and fails when any of it changes without a
+  recorded edit. One searches the standing documents for names that have
+  been retired.
+</p>
+<p>
+  A check that finds old faults on its first run records them in a register
+  that can only shrink. Anything new fails, and an entry that no longer
+  applies is reported so it can be struck. When a fault is closed, the record
+  says where its lesson now lives: a test, a check, a written rule, or
+  nowhere, because it was a one-off.
+</p>
+<p>
+  The type checker runs after every edit to a TypeScript file. The herb data
+  is typed as well, so a malformed entry does not compile. Continuous
+  integration runs a dependency audit, the type checker, the unit and
+  component suites, and the checks on each push to the staging branch.
+</p>
+<p>
+  The main line and the release branches are guarded on the developer's
+  machine. One command reads the list of steps out of the integration
+  workflow file and runs them, 34 steps in about five minutes, and a tracked
+  pre-push hook runs that command and refuses the push if any step fails.
+  There is one list of steps, so the two cannot drift apart.
+</p>
+
+<h3>One database, many builds</h3>
+<p>
+  Every change to the database is a numbered SQL migration, about seventy so
+  far, and an access rule is written in the same file as the table it
+  guards. One production database serves every build still on a phone, so a
+  migration written for the next version must leave the shipped one working.
+  New columns, views, and policies are added freely. A column is dropped, or
+  the shape of a result changed, only when no live build still reads the old
+  one. A feature that needs the server ships switched off behind a flag held
+  on the server, and is switched on once the builds in the field can use
+  it.
+</p>
 
 <h3>The rules live in the database</h3>
 <p>
@@ -290,7 +426,11 @@ footer.site a:hover { color: var(--gold); }
   There are three layers. About 1,600 tests cover the pure logic. About 800 render interface
   components and check what they draw and do. About 300 more, in twenty
   suites, run against a live local database and exercise its rules as real
-  signed-in users. A new test is expected to fail first: the code it guards is
+  signed-in users. A requirement of a finished spec is tied to its test by
+  number. The test names the requirement, so a failure points back to the
+  sentence it enforces, and a check fails when a requirement is named by no
+  test and is not on its register. A new
+  test is expected to fail first: the code it guards is
   broken on purpose, the test is seen to go red, and the code is put back. A
   test that passes either way guards nothing.
 </p>
@@ -318,6 +458,10 @@ footer.site a:hover { color: var(--gold); }
   <li>An early Android build held native code for the emulator only. It would
     have installed on no real phone, and every check that day ran on an
     emulator, where it worked. The release script came from that.</li>
+  <li>Requirements were numbered and tests were written, and nothing joined
+    the two. The first run of the trace check found 31 of 330 finished
+    requirements named by a test. The other 299 went on a register, and a
+    requirement comes off it when a test names it.</li>
 </ul>
 
 <nav class="more" aria-label="More about the app">
